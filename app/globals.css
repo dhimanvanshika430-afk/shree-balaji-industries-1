@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: 18 17 16;
+  --paper: 244 240 232;
+  --clay: 201 138 82;
+  --font-serif: "Fraunces", "Iowan Old Style", "Georgia", serif;
+  --font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+}
+
+:root[data-theme="light"] {
+  --ink: 244 240 232;
+  --paper: 24 22 20;
+  --clay: 168 100 48;
+}
+
+html {
+  background: rgb(var(--ink));
+}
+
+body {
+  background: rgb(var(--ink));
+  color: rgb(var(--paper));
+  transition: background-color 0.4s ease, color 0.4s ease;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgb(var(--clay));
+  color: rgb(var(--ink));
+}
+
+/* thin hairline rule used throughout, matches the reference's dividers */
+.hr-line {
+  border-top: 1px solid rgb(var(--paper) / 0.14);
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  color: rgb(var(--paper) / 0.55);
+}
+
+.container-sbi {
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding-left: clamp(1.25rem, 4vw, 4rem);
+  padding-right: clamp(1.25rem, 4vw, 4rem);
+}
+
+/* hide scrollbar on horizontal marquee strips while staying scrollable */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 34s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── cinematic hero helpers ───────────────────────────────────────────── */
+@keyframes kenburns {
+  from { transform: scale(1.14) translate3d(0, 0, 0); }
+  to   { transform: scale(1.02) translate3d(-1.2%, -0.8%, 0); }
+}
+.animate-kenburns { animation: kenburns 26s ease-out both; }
+
+/* continuous, gentle drift for each slideshow photo — desynced per slide via
+   a negative animation-delay so the three never move in lockstep */
+@keyframes kenburns-loop {
+  0%   { transform: scale(1.03) translate3d(0, 0, 0); }
+  100% { transform: scale(1.15) translate3d(-1.4%, -1%, 0); }
+}
+.animate-kenburns-loop { animation: kenburns-loop 20s ease-in-out infinite alternate; }
+
+@keyframes sweep {
+  0%   { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+  20%  { opacity: 0.18; }
+  100% { transform: translateX(220%) skewX(-18deg); opacity: 0; }
+}
+.hero-sweep::before {
+  content: "";
+  position: absolute; top: -10%; bottom: -10%; left: 0; width: 34%;
+  background: linear-gradient(90deg, transparent, rgba(255, 214, 170, 0.5), transparent);
+  animation: sweep 9s ease-in-out 2.4s infinite;
+}
+
+.film-grain {
+  opacity: 0.09; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: grain 0.9s steps(4) infinite;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); } 25% { transform: translate(-3%, 2%); }
+  50% { transform: translate(2%, -3%); } 75% { transform: translate(-2%, -1%); } 100% { transform: translate(0, 0); }
+}
+
+@keyframes scroll-cue { from { transform: translateY(-100%); } to { transform: translateY(200%); } }
+.animate-scroll-cue { animation: scroll-cue 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
+
+/* Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+
+/* blueprint sheet: fine drawing grid */
+.blueprint {
+  background-image:
+    linear-gradient(rgb(var(--paper) / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--paper) / 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ── Pinned sideways / drawing sections ───────────────────────────────────
+   The track is tall; its child stage sticks under the fixed header (4rem on
+   phones, 5rem from md up) while the visitor scrolls through the track. */
+.pin-track-gallery { height: calc(100svh - 4rem + max(700px, 90vw)); }
+.pin-track-drawing { height: calc(100svh - 4rem + 2000px); }
+.pin-stage { position: sticky; top: 4rem; height: calc(100svh - 4rem); overflow: hidden; }
+@media (min-width: 768px) {
+  .pin-track-gallery { height: calc(100svh - 5rem + max(700px, 90vw)); }
+  .pin-track-drawing { height: calc(100svh - 5rem + 2000px); }
+  .pin-stage { top: 5rem; height: calc(100svh - 5rem); }
+}
